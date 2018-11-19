@@ -118,31 +118,21 @@ print("${person.name} is ${person.age} years old")
 person.name = 20 //compiler error - the setter is private so property can not be directly changed
 person.changeName("Jim") //name property can be changed like this
 
-// VISIBILITY MODIFIERS
-class Visibility {
-  
-    var number: Int //public by default
-    private var text: String
-
-    public constructor(number: Int, text: String) {
-        this.number = number
-        this.text = text
-    }
-
-    internal fun internalFunction() { }
-    protected fun protectedFunction() { }
+//DATA CLASSES
+data class Product(val name: String) {
+    var price: Float = 0f
 }
 
-//execution from the same module but another class
-var obj = Visibility(1, "text")
-print(obj.number) //1
-print(obj.text) //compiler error - it's private
-obj.internalFunction() //it's okay because it is the same module
-obj.protectedFunction() //compiler error - it's protected so access only in class or in extending class
+var product1 = Product("Jack Daniels")
+product1.price = 10f //note that price isn't a part of autogenereated equals, hashCode, toString and copy methods
+print(product1.toString()) //Product(name=Jack Daniels)
+var product2 = product1.copy()
+print(product1.equals(product2)) //true - despite the differenet prices
 
 // NESTED AND INNER CLASS
 class Outer {
     var amount: Int = 5
+    val ratio: Int = 2
     
     class Nested {
         //nested class doesn't know about Outer class
@@ -152,7 +142,7 @@ class Outer {
     inner class Inner {
         //inner class knows about Outer class
         fun work(): Int {
-            amount = amount*2
+            amount = super@Outer.ratio * amount
             return amount
         }
     }
@@ -165,6 +155,43 @@ print(outerObj.amount) //5
 print(nestedObj.work()) //20
 print(innerObj.work()) //10
 print(outerObj.amount) //10
+
+// SEALED CLASS
+sealed class Status {
+    data class Content(val text: String) : Status() {
+        //some body
+    }
+    object None : Status() {
+        //some body
+    }
+    //some members of Status class
+}
+class Error(code: Int) : Status() {
+    //some body
+}
+//subclasses can be declared outside the sealed class but must be in the same file as sealed class
+
+//get status from network event
+val status: Status = Status.Content("content of the page")
+when(status) {
+    is Status.Content -> print(status.text)
+    is Status.None -> print("No content to show")
+    is Error -> print("Unexpected error")
+}
+
+// INLINE CLASSES
+inline class InlineClass(val text: String) : Showable {
+    val length: Int
+        get() = text.length
+
+    override fun show() {
+        println("$text has $length length")
+    }
+}
+
+interface Showable {
+    fun show()
+}
 
 // OBJECT EXPRESSION AND DECLARATION
 //object expression
@@ -220,3 +247,25 @@ SomeClass1.SingletonCompanion.someFun() //companion name can be missed
 print(SomeClass1.text) //SingletonCompanion
 SomeClass2.Companion.someFun() //companion default name is Companion
 print(SomeClass2.text) //Companion
+
+// VISIBILITY MODIFIERS
+class Visibility {
+  
+    var number: Int //public by default
+    private var text: String
+
+    public constructor(number: Int, text: String) {
+        this.number = number
+        this.text = text
+    }
+
+    internal fun internalFunction() { }
+    protected fun protectedFunction() { }
+}
+
+//execution from the same module but another class
+var obj = Visibility(1, "text")
+print(obj.number) //1
+print(obj.text) //compiler error - it's private
+obj.internalFunction() //it's okay because it is the same module
+obj.protectedFunction() //compiler error - it's protected so access only in class or in extending class
