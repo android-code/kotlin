@@ -118,7 +118,7 @@ functionWithFunArg(3) { a: Int -> a*a }
 
 //return function from function
 fun functionWithFunReturn(arg: Int) : (a: Int) -> String {
-	return { a -> "value=" + (arg*a) }
+    return { a -> "value=" + (arg*a) }
 }
 
 //execute function with function type returned
@@ -157,4 +157,64 @@ fun fibonacciLoop(n: Int, a: Long, b: Long): Long {
         b=sum
         counter++
     }
+}
+
+// SCOPE FUNCTIONS
+//this vs it
+var employee = Employee().apply {
+    name = "Jack"
+    salary = 3000
+}
+
+var employee = Employee().also { 
+    newEmployee ->
+    newEmployee.name = "Jack"
+    newEmployee.salary = 3000
+}
+
+//instead of
+var employee = Employee()
+employee.name = "Jack"
+employee.salary = 3000
+
+//return self or other type
+var employee = Employee("Jack", 3000)
+var tax = employee.let {
+    print(it)
+    it
+}.let {
+    it.salary
+}.let {
+    it * 0.2
+}
+
+var tax = employee.also {
+    print(it)
+    it //don't need to be here
+}.also {
+    it.salary //it skips, employee object is passed
+}.also {
+    it * 0.2 //compiler error - Employee instances is here, not Int
+}
+
+//instead of
+print(employee)
+var tax = employee.salary * 0.2
+
+//normal vs extension function
+var employee: Employee? = Employee("Jack", 3000)
+with(employee) {
+    print(this?.name)
+    this?.salary = salary + 1000
+}
+
+employee?.run {
+    print(name)
+    salary = salary + 1000
+}
+
+//instead of
+if(employee != null) {
+    print(employee.name)
+    employee.salary = employee.salary + 1000
 }

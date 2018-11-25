@@ -1,4 +1,5 @@
 // REFERENCE
+var nothing = null //it's okay because type inferred from context is Nothing?
 var a: String = "text"
 a = null //compiler error - null can not be a value of a non-null type
 
@@ -37,10 +38,42 @@ var length: Int = if(text != null) text.length else -1
 //instead of if-else just use Elvis
 length = text?.length ?: -1
 
-//return and throw
+//throw and Nothing
+//if true then value is null and has Nothing? type
 var room = building?.floor?.room ?: throw Exception("No room provided")
-var name = person?.name ?: return null
+var name = person?.name ?: null 
 
 // ASSERTION OPERATOR !!
 var text: String? = null
 val length = text!!.length //KotlinNullPointerException because text is null!
+
+// EXCEPTIONS
+//some custom function and exception class
+class CustomException(message: String) : Exception(message)
+fun action(text: String) {
+    if(text.length != 5 || !text.contains("PL")) { 
+        throw CustomException("Passed code hasn't valid polish format")
+    }
+    else {
+        //do some job
+    }
+}
+
+//try-catch-finally
+val isValid: Boolean = try {
+    action("PL12")
+    true
+}
+catch(e: CustomException) {
+    print(e) //CustomException: Passed code hasn't valid polish format
+    false
+}
+catch(e: Exception) { 
+    //depends on expected exception types more than one catch block can be declared
+    false
+}
+finally {
+    print("This block is optional")
+    true //this return value is ignored
+}
+print(isValid) //false

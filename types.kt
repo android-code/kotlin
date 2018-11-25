@@ -68,7 +68,7 @@ var number = 5
 var template = "number = $number and text variable length = ${text.length}"
 
 // ARRAYS
-var array = ArrayOf(1, 2, 3)
+var array = arrayOf(1, 2, 3)
 var arrayInt: IntArray = intArrayOf(1, 2, 3)
 var element = array[1]
 element = arrayInt.get(1)
@@ -121,6 +121,60 @@ var color = Color.RED
 print(color) //RED
 print(color.number) //1
 print(Color.GREEN.number) //2
+
+// GENERICS
+class Invariant<T> //class definition
+var genString: Invariant<String> = Invariant<String>() //ok types are equals
+var genInt: Invariant<Int> = Invariant<Long>() //compiler error - Invariant<Int> expected instead of Invariant<Long>
+
+fun <T> genericFunction(x: T) {} //function definition
+var a = genericFunction<String>("generic") //execution
+
+//covariant and contravariant
+class Covariant<out T>
+class Contravariant<in T>	
+
+var covA: Covariant<Number> = Covariant<Int>() //ok, Number is super class for Int
+var covB: Covariant<Int> = Covariant<Number> //compiler error - type mismatch 
+var contraA: Covariant<Number> = Covariant<Int>() //compiler error - type mismatch 	
+var contraB: Generic<Int> = Generic<Number> //ok, Int is subtype of Number class
+
+// COLLECTIONS
+//empty
+var emptyList: List<Int> = emptyList()
+var emptySet = setOf<Int>() //type paremeter inferred from context
+
+//immutable
+var immutableList: List<Int> = listOf(1,2,3)
+var immutableSet: Set<Int> = setOf(4,5,6)
+var immutableMap: Map<Int, String>  = mapOf(1 to "a", 2 to "b", 3 to "c")
+
+//mutable
+var mutableList: MutableList<Int> = mutableListOf(3,2,1)
+var mutableSet: MutableSet<Int> = mutableSetOf(6,5,4)
+var mutableMap: MutableMap<Int, String> = mutableMapOf(3 to "c", 2 to "b", 1 to "c")
+
+//cast
+var immutableFromMutable: List<Int> = mutableList //ok by 
+var mutableFromImmutable: MutableList<Int> = list.toMutableList() //must be directly casted by method
+
+//covariant
+var covNumbers: List<Number> = immutableList //ok because Number is supertype for Int
+var covIntegers: List<Int> = covNumbers //compiler error - Int is not supertype of Number
+var covMutableIntegers: MutableList<Int> = immutableList //compiler error - List<Int> is expected
+
+//collection operations
+immutableList.first() //1
+immutableList.get(1) //2
+immutableList.slice(0..1) //[1,2]
+immutableList.filter { it % 2 == 0} //[1, 3]
+
+println(mutableList) //[3,2,1]
+mutableList.add(4) //[3,2,1,4]
+mutableList.set(1, 5) //[3,5,1,4]
+mutableList.removeAt(2) //[3,5,4]
+mutableList.remove(4) //[3,5]
+mutableList.clear() //[]
 
 // ALIAS
 typealias ShortName = VeryLongNameOfSomeCustomClass
