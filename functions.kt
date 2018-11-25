@@ -106,15 +106,18 @@ function(*array, text="text")
 
 // high order
 //take function as argument
-fun functionWithFunArg(arg: Int = 10, lambda: (a: Int) -> Int) {
+fun functionWithFunArg(arg: Int = 10, lambda: (a: Int) -> Int): Int {
     //do some work and use lambda function
-    lambda(arg)
+    return lambda(arg)
 }
 
 //execute function with function as argument
-var lambdaArg = { a: Int -> a*a }
-functionWithFunArg(3, lambdaArg) 
-functionWithFunArg(3) { a: Int -> a*a } 
+fun reflectionFun(a: Int) = a*a //just function
+functionWithFunArg(3, ::reflectionFun) //passing reference to function by :: operator
+
+var lambdaArg = { a: Int -> a*a } //function stored as variable
+functionWithFunArg(3, lambdaArg) //passing function stored in variable
+functionWithFunArg(3) { a: Int -> a*a } //passing anonymous function
 
 //return function from function
 fun functionWithFunReturn(arg: Int) : (a: Int) -> String {

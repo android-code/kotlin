@@ -15,6 +15,9 @@ class Name {
 
 class Empty //if class has no body than curly braces are no needed
 
+//class reflection
+val classReference = Empty::class //reflection - classReference is instance of KClass in this case KClass<Empty>
+
 // CONSTRUCTORS
 //primary constructor can have some parameters
 class Primary constructor(text: String) { }
@@ -43,7 +46,9 @@ class Student(name: String, surname: String) {
 //secondary constructor
 //class has only secondary constructor
 class Secondary {
-    constructor(text: String) { // some code }
+    constructor(text: String) { 
+        // some code 
+    }
 }
 
 //class has primary and secondary constructor
@@ -74,6 +79,12 @@ class NoConstructor {
 
 //use default primary constructor to create an instance
 var obj = NoConstructor()
+
+//constructor reflection
+fun constructorReference(x: () -> NoConstructor) {
+    val obj: NoConstructor = x()
+}
+constructorReference(::NoConstructor)
 
 // PROPERTIES AND FIELDS
 //in Kotlin property is both field and accessors 
@@ -109,7 +120,7 @@ class Person(name: String, age: Int) {
 var person = Person("william", 15)
 print("${person.name} is ${person.age} years old") //William is 15 years old
 person.name = "Jim"
-person.age = 20 //compiler error - he setter is private so property can not be directly changed
+person.age = 20 //compiler error - setter is private so property can not be directly changed
 person.changeAge(20) //change property by specific method
 print("${person.name} is ${person.age} years old") Mr. Jim is 20 years old
 
@@ -117,6 +128,10 @@ var person = Person("William", 15)
 print("${person.name} is ${person.age} years old")
 person.name = 20 //compiler error - the setter is private so property can not be directly changed
 person.changeName("Jim") //name property can be changed like this
+
+//properties reflection
+var name = person::name //it's okay
+name = person.name.get() //compiler error
 
 //DATA CLASSES
 data class Product(val name: String) {
