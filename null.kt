@@ -50,6 +50,8 @@ val length = text!!.length //KotlinNullPointerException because text is null!
 // EXCEPTIONS
 //some custom function and exception class
 class CustomException(message: String) : Exception(message)
+
+@Throws(CustomException::class, Exception::class) //this is optional
 fun action(text: String) {
     if(text.length != 5 || !text.contains("PL")) { 
         throw CustomException("Passed code hasn't valid polish format")

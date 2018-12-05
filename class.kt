@@ -99,6 +99,15 @@ public void setName(String name) {
     this.name = name;
 }
 
+//properties as arguments
+class Weather(val city: String, var temperature: Int) {} 
+
+//equivalent of
+class Weather(city: String, temperature: Int) {
+    val city: String = city
+    var temperature: Int = temperature
+}
+
 class Person(name: String, age: Int) {
 
     var name: String = name

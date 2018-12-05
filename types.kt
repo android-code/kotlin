@@ -11,6 +11,13 @@ var a: String
 println(a) //compiler error - variable must be initialized
 var b //compiler error - variable must have a type or be initialized
 
+//lateinit
+lateinit var obj: SomeClass //type must be declared
+print(obj) //throws UninitializedPropertyAccessException
+
+obj = SomeClass() //setup obj from external source
+print(obj) //now it's okay
+
 // NUMERICS
 var decimals = 100 //decimals (Int, Short, Byte)
 var binary = 0b1100100 //binary
